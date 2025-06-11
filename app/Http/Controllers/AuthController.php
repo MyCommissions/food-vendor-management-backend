@@ -33,7 +33,7 @@ class AuthController extends Controller
                 'role_id' => $user->role_id,
                 'is_approved' => $user->is_approved,
             ]
-        ]);
+        ], 201);
     }
 
     public function login(LoginUserRequest $request)
@@ -54,7 +54,7 @@ class AuthController extends Controller
             ],
             'token' => $result['token'],
             'token_type' => 'Bearer'
-        ]);
+        ], 200);
     }
 
     public function logout()
@@ -63,6 +63,6 @@ class AuthController extends Controller
         
         return response()->json([
             'message' => 'Successfully logged out'
-        ]);
+        ], 200);
     }
 }
