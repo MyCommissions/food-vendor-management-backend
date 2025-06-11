@@ -13,7 +13,7 @@ class StoreController extends Controller
     protected $storeService;
     public function __construct(StoreService $storeService)
     {
-        $this->$storeService = $storeService;
+        $this->storeService = $storeService;
     }
 
     public function createStore(CreateStoreRequest $request)
@@ -23,7 +23,7 @@ class StoreController extends Controller
         return response()->json([
             'message' => 'Store Created Successfully!',
             'store' => [
-                'id' => $store->id,
+                'id' => $store->user_id,
                 'business_name' => $store->business_name,
                 'business_type' => $store->business_type,
             ]

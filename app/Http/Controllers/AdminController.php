@@ -46,6 +46,21 @@ class AdminController extends Controller
         ]);
     }
 
+    public function getUser($id)
+    {
+        $validatedRequest = validator([
+            'user_id' => $id
+        ],
+    ['user_id' => 'required|exists:users,id'])->validate();
+
+        $user = $this->userService->user($validatedRequest['user_id']);
+
+        return response()->json([
+            'user'=> $user
+        ]);
+        
+    }
+
     public function getPendingVendors(): JsonResponse
     {
         $pendingVendors = $this->userService->pendingVendors();

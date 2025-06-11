@@ -103,11 +103,16 @@ class UserService
 
     public function allVendors()
     {
-        return User::where('role_id', 2)->all();
+        return User::where('role_id', 2)->get();
     }
 
     public function allCustomers()
     {
-        return User::where('role_id', 1)->all();
+        return User::where('role_id', 1)->get();
+    }
+
+    public function user(Int $request)
+    {
+        return User::where('id', $request)->firstOrFail();
     }
 }

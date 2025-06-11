@@ -43,7 +43,46 @@ Content-Type: application/json
 
 #####
 
+POST http://127.0.0.1:8000/api/auth/login HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+
+{
+    "email": "admin@system.com",
+    "password": "admin123"
+}
+
+#####
+
 GET http://127.0.0.1:8000/api/admin/pending-vendors HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer 4|SjIIXCOZokxelpX0oqhN15cEnDEK8Ws3MIr5RKnff6d9a664
+
+#####
+
+GET http://127.0.0.1:8000/api/admin/users HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer 4|SjIIXCOZokxelpX0oqhN15cEnDEK8Ws3MIr5RKnff6d9a664
+
+#####
+
+GET http://127.0.0.1:8000/api/admin/users/customers HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer 4|SjIIXCOZokxelpX0oqhN15cEnDEK8Ws3MIr5RKnff6d9a664
+
+#####
+
+GET http://127.0.0.1:8000/api/admin/users/vendors HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer 4|SjIIXCOZokxelpX0oqhN15cEnDEK8Ws3MIr5RKnff6d9a664
+
+#####
+
+GET http://127.0.0.1:8000/api/admin/users/2 HTTP/1.1
 Accept: application/json
 Content-Type: application/json
 Authorization: Bearer 4|SjIIXCOZokxelpX0oqhN15cEnDEK8Ws3MIr5RKnff6d9a664
@@ -57,7 +96,7 @@ Authorization: Bearer YOUR_ADMIN_TOKEN_HERE
 
 #####
 
-POST http://127.0.0.1:8000/api/stores HTTP/1.1
+POST http://127.0.0.1:8000/api/stores/create HTTP/1.1
 Accept: application/json
 Content-Type: application/json
 Authorization: Bearer YOUR_VENDOR_TOKEN_HERE

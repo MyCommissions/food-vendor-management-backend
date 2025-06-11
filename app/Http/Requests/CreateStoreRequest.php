@@ -22,7 +22,6 @@ class CreateStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => 'required|integer|exists:users,id',
             'business_name' => 'required|string|unique:stores,business_name',
             'business_type' => 'required|string',
         ];
