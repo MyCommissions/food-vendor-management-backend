@@ -48,8 +48,8 @@ Accept: application/json
 Content-Type: application/json
 
 {
-    "email": "admin@system.com",
-    "password": "admin123"
+    "email": "jane@vendor.com",
+    "password": "vendor123"
 }
 
 #####
@@ -99,10 +99,10 @@ Authorization: Bearer YOUR_ADMIN_TOKEN_HERE
 POST http://127.0.0.1:8000/api/stores/create HTTP/1.1
 Accept: application/json
 Content-Type: application/json
-Authorization: Bearer YOUR_VENDOR_TOKEN_HERE
+Authorization: Bearer 10|LO0xJtdR856XQQjhYdxXPfGr2SWcqfUudufR8vyBdebdb5b1
 
 {
-    "business_name": "Jane's Food Corner",
+    "business_name": "Janes's Food Corner",
     "business_type": "Food"
 }
 
