@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Store;
 use App\Models\User;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
@@ -31,16 +32,20 @@ class UserService
         $user = User::where('email', $data['email'])->first();
 
         if (!$user || !Hash::check($data['password'], $user->password)) {
-            throw ValidationException::withMessages([
-                'credentials' => ['The provided credentials are incorrect.'],
-            ]);
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => 'The provided credentials are incorrect.'
+                ], 401)
+            );
         }
 
         // Check if vendor is approved
         if ($user->isVendor() && !$user->is_approved) {
-            throw ValidationException::withMessages([
-                'account' => ['Your vendor account is pending approval. Please wait for admin confirmation.'],
-            ]);
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => 'Your vendor account is pending approval. Please wait for admin confirmation.'
+                ], 403)
+            );
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -55,23 +60,25 @@ class UserService
     {
         $user = Auth::user();
 
-        if (!Store::where('user_id', $user->id)->exists()) {
-            throw ValidationException::withMessages([
-                'account' => ['You need to create your store first']
-            ]);
+        if (!$user->store) {
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => 'You need to create your store first.'
+                ], 403)
+            );
         }
-
-        if ($user) {
-            $user->currentAccessToken()->delete();
-        }
+        
+        $user->currentAccessToken()->delete();
     }
 
     public function approveVendor(User $user): void
     {
         if (!$user->isVendor()) {
-            throw ValidationException::withMessages([
-                'user' => ['This user is not a vendor.'],
-            ]);
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => 'This user is not a vendor.'
+                ], 403)
+            );
         }
 
         $user->update(['is_approved' => true]);
@@ -80,9 +87,11 @@ class UserService
     public function rejectVendor(User $user): void
     {
         if (!$user->isVendor()) {
-            throw ValidationException::withMessages([
-                'user' => ['This user is not a vendor.'],
-            ]);
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => 'This user is not a vendor.'
+                ], 403)
+            );
         }
 
         $user->delete();

@@ -25,7 +25,7 @@ class AdminController extends Controller
 
         return response()->json([
             "users" => $users
-        ]);
+        ], 200);
     }
 
     public function getAllVendors()
@@ -34,7 +34,7 @@ class AdminController extends Controller
         
         return response()->json([
             "users" => $vendors
-        ]);
+        ], 200);
     }
 
     public function getAllCustomers()
@@ -43,7 +43,7 @@ class AdminController extends Controller
 
         return response()->json([
             "users" => $customers
-        ]);
+        ], 200);
     }
 
     public function getUser($id)
@@ -57,7 +57,7 @@ class AdminController extends Controller
 
         return response()->json([
             'user'=> $user
-        ]);
+        ], 200);
         
     }
 
@@ -67,7 +67,7 @@ class AdminController extends Controller
 
         return response()->json([
             'pending_vendors' => $pendingVendors
-        ]);
+        ], 200);
     }
 
     public function approveVendor(User $user): JsonResponse
@@ -77,7 +77,7 @@ class AdminController extends Controller
         return response()->json([
             'message' => 'Vendor approved successfully',
             'user' => $user->fresh()
-        ]);
+        ], 200);
     }
 
     public function rejectVendor(User $user): JsonResponse
@@ -86,6 +86,6 @@ class AdminController extends Controller
 
         return response()->json([
             'message' => 'Vendor rejected and removed from the system'
-        ]);
+        ], 200);
     }
 }
