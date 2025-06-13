@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StoreController;
 use Illuminate\Support\Facades\Route;
 
@@ -26,5 +27,12 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('stores')->group(function () {
         Route::post('create', [StoreController::class, 'createStore']);
+    });
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::prefix('products')->group(function () {
+        Route::post('create', [ProductController::class, 'createProduct']);
+        Route::post('update', [ProductController::class, 'updateProduct']);
     });
 });
