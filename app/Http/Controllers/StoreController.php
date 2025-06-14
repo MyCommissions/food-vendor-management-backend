@@ -23,13 +23,7 @@ class StoreController extends Controller
     {
         $user = Auth::user();
 
-        if (!$user->isAdmin()) {
-            return response()->json([
-                'message' => 'Unauthorized Access to this route.'
-            ], 403);
-        }
-
-        $stores = $this->storeService->allStores();
+        $stores = $this->storeService->allStores($user);
 
         return response()->json([
             'stores' => $stores
@@ -38,16 +32,9 @@ class StoreController extends Controller
 
     public function getOwnStore()
     {
-        $id = Auth::user()->id;
+        $user = Auth::user();
 
-        $validatedStore = validator([
-            'user_id' => $id,
-        ],
-        [
-            'user_id' => 'required|exists:users,id'
-        ])->validate();
-
-        $store = $this->storeService->store($validatedStore['user_id']);
+        $store = $this->storeService->store( $user);
 
         return response()->json([
             'store' => $store
@@ -56,9 +43,9 @@ class StoreController extends Controller
 
     public function createStore(CreateStoreRequest $request)
     {
-        $userId = Auth::user()->id;
+        $user = Auth::user();
 
-        $store = $this->storeService->createStore($request->validated(), $userId);
+        $store = $this->storeService->createStore($request->validated(), (int) $user->id, $user);
 
         return response()->json([
             'message' => 'Store Created Successfully!',
@@ -72,9 +59,9 @@ class StoreController extends Controller
 
     public function updateOwnStore(UpdateStoreRequest $request, $storeId)
     {
-        $userId = Auth::user()->id;
+        $user = Auth::user();
 
-        $updatedStore = $this->storeService->updateStore($request->validated(), $storeId, $userId);
+        $updatedStore = $this->storeService->updateStore($request->validated(), (int) $storeId, $user);
 
         return response()->json([
             'store' => $updatedStore
