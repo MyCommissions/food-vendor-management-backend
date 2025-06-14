@@ -43,12 +43,36 @@ class StoreService
 
     public function updateStore(array $data, int $storeId, int $userId)
     {
-        $upddatedStore = Store::where('id', $storeId)
+        if ($storeId && !$userId) {
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => 'You are unauthorized to update this store.'
+                ], 403)
+            );
+        }
+
+        if (!$userId) {
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => 'User does not exist.'
+                ], 404)
+            );
+        }
+
+        $updatedStore = Store::where('id', $storeId)
             ->where('user_id', $userId)
             ->firstOrFail();
 
-        $upddatedStore->update($data);
+        if (!$updatedStore) {
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => 'Store does not exist.'
+                ], 404)
+            );
+        }
 
-        return $upddatedStore;
+        $updatedStore->update($data);
+
+        return $updatedStore;
     }
 }

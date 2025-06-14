@@ -24,7 +24,7 @@ Content-Type: application/json
     "lastname": "Smith",
     "birthday": "1992-03-15",
     "gender": "female",
-    "email": "jane@vendor.com",
+    "email": "jane123@vendor.com",
     "password": "vendor123",
     "password_confirmation": "vendor123",
     "role_id": 2
@@ -48,7 +48,7 @@ Accept: application/json
 Content-Type: application/json
 
 {
-    "email": "jane@vendor.com",
+    "email": "jane123@vendor.com",
     "password": "vendor123"
 }
 
@@ -89,22 +89,36 @@ Authorization: Bearer 4|SjIIXCOZokxelpX0oqhN15cEnDEK8Ws3MIr5RKnff6d9a664
 
 #####
 
-POST http://127.0.0.1:8000/api/admin/vendors/2/approve HTTP/1.1
+POST http://127.0.0.1:8000/api/admin/vendors/6/approve HTTP/1.1
 Accept: application/json
 Content-Type: application/json
-Authorization: Bearer YOUR_ADMIN_TOKEN_HERE
+Authorization: Bearer 4|SjIIXCOZokxelpX0oqhN15cEnDEK8Ws3MIr5RKnff6d9a664
 
 #####
 
 POST http://127.0.0.1:8000/api/stores/create HTTP/1.1
 Accept: application/json
 Content-Type: application/json
-Authorization: Bearer 10|LO0xJtdR856XQQjhYdxXPfGr2SWcqfUudufR8vyBdebdb5b1
+Authorization: Bearer 11|sstnxRZl1h0Y3wmsoQxikvGZonuvPfuzL0FTznLyf9f9cb05
 
 {
-    "business_name": "Janes's Food Corner",
+    "business_name": "Janess's Food Corner",
     "business_type": "Food"
 }
+
+#####
+
+GET http://127.0.0.1:8000/api/stores/ HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer 12|YMRzoa6rUyGjzwfHAIbZJASAx1R07MExaWq5xqek84d2eb8d
+
+#####
+
+GET http://127.0.0.1:8000/api/admin/stores/all HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer 12|YMRzoa6rUyGjzwfHAIbZJASAx1R07MExaWq5xqek84d2eb8d
 
 #####
 

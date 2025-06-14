@@ -21,6 +21,14 @@ class StoreController extends Controller
 
     public function getAllStores()
     {
+        $user = Auth::user();
+
+        if (!$user->isAdmin()) {
+            return response()->json([
+                'message' => 'Unauthorized Access to this route.'
+            ], 403);
+        }
+
         $stores = $this->storeService->allStores();
 
         return response()->json([
@@ -66,7 +74,7 @@ class StoreController extends Controller
     {
         $userId = Auth::user()->id;
 
-        $updatedStore = $this->storeService->updateStore($request->validated(), $userId, $storeId);
+        $updatedStore = $this->storeService->updateStore($request->validated(), $storeId, $userId);
 
         return response()->json([
             'store' => $updatedStore
