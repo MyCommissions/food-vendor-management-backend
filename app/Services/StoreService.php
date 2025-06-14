@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Auth;
 
 class StoreService
 {
-
     public function allStores(User $user)
     {
         if (!$user->isAdmin()) {
