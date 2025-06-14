@@ -11,19 +11,52 @@ use Illuminate\Support\Facades\Auth;
 
 class StoreService
 {
-
-    public function allStores()
+    public function allStores(User $user)
     {
+        if (!$user->isAdmin()) {
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => 'Unauthorized Access to this route.'
+                ], 403)
+            );
+        }
+
         return Store::all();
     }
 
-    public function store($userId)
+    public function store(User $user)
     {
-        return Store::where('user_id', $userId)->get();
+        if (!$user->isVendor()) {
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => 'Unauthorized Access to this route.'
+                ], 403)
+            );
+        }
+        
+        $store = Store::where('user_id', $user->id)->first();
+
+        if (!$store) {
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => 'Store not found.'
+                ], 404)
+            );
+        }
+
+        return $store;
     }
 
-    public function createStore(array $data, int $userId): Store
+    public function createStore(array $data, int $userId, User $user): Store
     {
+        if ($user->isUser()) {
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => 'Only Vendors can create a store.'
+                ], 403)
+            );
+        }
+
         $storeExists = Store::where("user_id", $userId)->exists();
 
         if ($storeExists) {
@@ -41,38 +74,35 @@ class StoreService
         ]);
     }
 
-    public function updateStore(array $data, int $storeId, int $userId)
+    public function updateStore(array $data, int $storeId, User $user)
     {
-        if ($storeId && !$userId) {
+        if (!$user->isVendor()) {
             throw new HttpResponseException(
                 response()->json([
-                    'message' => 'You are unauthorized to update this store.'
+                    'message' => 'Unauthorized Access to this route.'
                 ], 403)
             );
         }
 
-        if (!$userId) {
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'User does not exist.'
-                ], 404)
-            );
-        }
-
-        $updatedStore = Store::where('id', $storeId)
-            ->where('user_id', $userId)
+        $store = Store::where('id', $storeId)
+            ->where('user_id', $user->id)
             ->firstOrFail();
 
-        if (!$updatedStore) {
+        if (!$store) {
             throw new HttpResponseException(
                 response()->json([
-                    'message' => 'Store does not exist.'
+                    'message' => 'Store not found or you are not authorized to update it.'
                 ], 404)
             );
         }
 
-        $updatedStore->update($data);
+        $store->update($data);
 
-        return $updatedStore;
+        return $store;
+    }
+
+    public function deleteStore($storeId)
+    {
+        $store = Store::where('store_id', $storeId);
     }
 }
