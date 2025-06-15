@@ -102,8 +102,20 @@ class StoreService
         return $store;
     }
 
-    public function deleteStore($storeId)
+    public function deleteStore($storeId, User $user)
     {
-        $store = Store::where('store_id', $storeId);
+        $store = Store::where('store_id', $storeId)
+            ->where('user_id', $user->id)
+            ->firstOrFail();
+
+        if (!$store) {
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => 'Store not found or you are not authorized to delete it.'
+                ], 404)
+            );
+        }
+
+        $store->delete();
     }
 }
