@@ -22,7 +22,7 @@ class StoreController extends Controller
     public function getAllStores()
     {
         $user = Auth::user();
-
+      
         $stores = $this->storeService->allStores($user);
 
         return response()->json([

@@ -101,7 +101,7 @@ class StoreService
 
         return $store;
     }
-
+  
     public function deleteStore(int $storeId, User $user)
     {
         $store = Store::where('store_id', $storeId)
