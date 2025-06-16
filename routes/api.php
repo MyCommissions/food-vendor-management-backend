@@ -29,7 +29,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('stores')->group(function () {
         Route::get('', [StoreController::class, 'getOwnStore']);
         Route::post('create', [StoreController::class, 'createStore']);
-        Route::post('{storeId}/update', [StoreController::class, 'updateStore']);
+        Route::put('{storeId}', [StoreController::class, 'updateOwnStore']);
+        Route::delete('{storeId}', [StoreController::class, 'deleteOwnStore']);
     });
 });
 

@@ -38,7 +38,7 @@ class StoreController extends Controller
 
         return response()->json([
             'store' => $store
-        ]);
+        ], 200);
     }
 
     public function createStore(CreateStoreRequest $request)
@@ -65,6 +65,18 @@ class StoreController extends Controller
 
         return response()->json([
             'store' => $updatedStore
-        ]);
+        ], 200);
+    }
+
+    public function deleteOwnStore($storeId)
+    {
+        $user = Auth::user();
+
+        $deletedStore = $this->storeService->deleteStore($storeId, $user);
+
+        return response()->json([
+            'store' => $deletedStore
+        ], 200);
     }
 }
+                                            

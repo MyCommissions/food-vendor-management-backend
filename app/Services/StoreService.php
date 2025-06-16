@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 
 class StoreService
 {
+
     public function allStores(User $user)
     {
         if (!$user->isAdmin()) {
@@ -47,7 +48,7 @@ class StoreService
         return $store;
     }
 
-    public function createStore(array $data, int $userId, User $user): Store
+    public function createStore(array $data, int $userId, User $user)
     {
         if ($user->isUser()) {
             throw new HttpResponseException(
@@ -100,9 +101,21 @@ class StoreService
 
         return $store;
     }
-
-    public function deleteStore($storeId)
+  
+    public function deleteStore(int $storeId, User $user)
     {
-        $store = Store::where('store_id', $storeId);
+        $store = Store::where('store_id', $storeId)
+            ->where('user_id', $user->id)
+            ->firstOrFail();
+
+        if (!$store) {
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => 'Store not found or you are not authorized to delete it.'
+                ], 404)
+            );
+        }
+
+        $store->delete();
     }
 }
