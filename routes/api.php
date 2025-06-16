@@ -30,13 +30,15 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('', [StoreController::class, 'getOwnStore']);
         Route::post('create', [StoreController::class, 'createStore']);
         Route::put('{storeId}', [StoreController::class, 'updateOwnStore']);
-        Route::delete('{storeId}', [StoreController::class, 'deleteOwnStore']);
+        Route::delete('', [StoreController::class, 'deleteOwnStore']);
     });
 });
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('products')->group(function () {
+        Route::get('', [ProductController::class, 'getAllProducts']);
+        Route::get('{productId}', [ProductController::class, 'getProduct']);
         Route::post('create', [ProductController::class, 'createProduct']);
-        Route::post('update', [ProductController::class, 'updateProduct']);
+        Route::put('{productId}', [ProductController::class, 'updateProduct']);
     });
 });

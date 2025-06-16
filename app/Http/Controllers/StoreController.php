@@ -68,11 +68,11 @@ class StoreController extends Controller
         ], 200);
     }
 
-    public function deleteOwnStore($storeId)
+    public function deleteOwnStore()
     {
         $user = Auth::user();
 
-        $deletedStore = $this->storeService->deleteStore($storeId, $user);
+        $deletedStore = $this->storeService->deleteStore( $user);
 
         return response()->json([
             'store' => $deletedStore

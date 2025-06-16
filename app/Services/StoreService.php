@@ -102,8 +102,19 @@ class StoreService
         return $store;
     }
   
-    public function deleteStore(int $storeId, User $user)
+    public function deleteStore(User $user)
     {
+        $storeId = Store::where('user_id', $user->id)
+            ->firstOrFail();
+
+        if (!$storeId) {
+            throw new HttpResponseException(
+                response()->json([
+                    'message' => 'Store not found.'
+                ], 404)
+            );
+        }
+
         $store = Store::where('store_id', $storeId)
             ->where('user_id', $user->id)
             ->firstOrFail();
@@ -117,5 +128,7 @@ class StoreService
         }
 
         $store->delete();
+
+        return $store;
     }
 }
