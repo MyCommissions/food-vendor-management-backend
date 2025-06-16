@@ -18,6 +18,28 @@ class ProductController extends Controller
         $this->productService = $productService;
     }
 
+    public function getAllProducts()
+    {
+        $user = Auth::user();
+
+        $products = $this->productService->allProducts($user);
+
+        return response()->json([
+            'products' => $products
+        ], 200);
+    }
+
+    public function getProduct($productId)
+    {
+        $user = Auth::user();
+
+        $product = $this->productService->product((int) $productId, $user);
+
+        return response()->json([
+            'product' => $product
+        ], 200);
+    }
+
     public function createProduct(CreateProductRequest $request)
     {
         $userId = Auth::user()->id;
