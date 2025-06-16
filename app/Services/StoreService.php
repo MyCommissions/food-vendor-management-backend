@@ -48,7 +48,7 @@ class StoreService
         return $store;
     }
 
-    public function createStore(array $data, int $userId, User $user): Store
+    public function createStore(array $data, int $userId, User $user)
     {
         if ($user->isUser()) {
             throw new HttpResponseException(
@@ -102,7 +102,7 @@ class StoreService
         return $store;
     }
 
-    public function deleteStore($storeId, User $user)
+    public function deleteStore(int $storeId, User $user)
     {
         $store = Store::where('store_id', $storeId)
             ->where('user_id', $user->id)
