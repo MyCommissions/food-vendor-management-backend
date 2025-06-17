@@ -45,7 +45,7 @@ class StoreController extends Controller
     {
         $user = Auth::user();
 
-        $store = $this->storeService->createStore($request->validated(), (int) $user->id, $user);
+        $store = $this->storeService->createStore($request->validated(), $user);
 
         return response()->json([
             'message' => 'Store Created Successfully!',

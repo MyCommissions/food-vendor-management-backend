@@ -38,13 +38,33 @@ class ProductService
         $storeId = Store::where('user_id', $user->id)
             ->firstOrFail();
 
-        return Product::where('id', $productId)
+        if (!$storeId) {
+            throw new HttpClientException(
+                response()->json([
+                    'message' => 'Store not found or you are not authorize to access this.'
+                ], 404)
+            );
+        }
+
+        $product = Product::where('id', $productId)
             ->where('store_id', $storeId)
             ->firstOrFail();
+
+        if (!$product) {
+            throw new HttpClientException(
+                response()->json([
+                    'message' => 'Product not found or you are not authorize to access this.'
+                ], 404)
+            );
+        }
+
+        return $product;
     }
 
     public function createProduct(array $data, int $storeId)
     {
+        
+
         return Product::create([
             'store_id' => $storeId,
             'name' => $data['name'],
