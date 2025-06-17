@@ -42,11 +42,9 @@ class ProductController extends Controller
 
     public function createProduct(CreateProductRequest $request)
     {
-        $userId = Auth::user()->id;
+        $user = Auth::user()->id;
 
-        $storeId = Store::where('user_id', $userId);
-
-        $product = $this->productService->createProduct($request->all(), $storeId);
+        $product = $this->productService->createProduct($request->validated(), $user);
 
         return response()->json([
             'product' => $product

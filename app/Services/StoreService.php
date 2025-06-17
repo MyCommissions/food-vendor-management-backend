@@ -48,7 +48,7 @@ class StoreService
         return $store;
     }
 
-    public function createStore(array $data, int $userId, User $user)
+    public function createStore(array $data, User $user)
     {
         if ($user->isUser()) {
             throw new HttpResponseException(
@@ -58,7 +58,7 @@ class StoreService
             );
         }
 
-        $storeExists = Store::where("user_id", $userId)->exists();
+        $storeExists = Store::where("user_id", $user->id)->exists();
 
         if ($storeExists) {
             throw new HttpResponseException(
@@ -69,7 +69,7 @@ class StoreService
         }
 
         return Store::create([
-            "user_id" => $userId,
+            "user_id" => $user->id,
             "business_name" => $data["business_name"],
             "business_type" => $data["business_type"],
         ]);
