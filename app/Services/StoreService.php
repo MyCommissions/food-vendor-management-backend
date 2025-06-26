@@ -58,9 +58,9 @@ class StoreService
             );
         }
 
-        $storeExists = Store::where("user_id", $user->id)->exists();
+        $store = Store::where("user_id", $user->id)->exists();
 
-        if ($storeExists) {
+        if ($store) {
             throw new HttpResponseException(
                 response()->json([
                     'message' => 'Vendor already have a store registered on the system.'

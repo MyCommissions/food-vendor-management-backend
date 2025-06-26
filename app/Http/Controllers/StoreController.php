@@ -72,7 +72,7 @@ class StoreController extends Controller
     {
         $user = Auth::user();
 
-        $deletedStore = $this->storeService->deleteStore( $user);
+        $deletedStore = $this->storeService->deleteStore($user);
 
         return response()->json([
             'store' => $deletedStore

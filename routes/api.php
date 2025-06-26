@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StoreController;
 use Illuminate\Support\Facades\Route;
@@ -17,28 +18,30 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('pending-vendors', [AdminController::class, 'getPendingVendors']);
         Route::post('vendors/{user}/approve', [AdminController::class, 'approveVendor']);
         Route::post('vendors/{user}/reject', [AdminController::class, 'rejectVendor']);
-        Route::get('users', [AdminController::class,'getAllUsers']);
-        Route::get('users/vendors', [AdminController::class,'getAllVendors']);
-        Route::get('users/customers', [AdminController::class,'getAllCustomers']);
+        Route::get('users', [AdminController::class, 'getAllUsers']);
+        Route::get('users/vendors', [AdminController::class, 'getAllVendors']);
+        Route::get('users/customers', [AdminController::class, 'getAllCustomers']);
         Route::get('users/{id}', [AdminController::class, 'getUser']);
         Route::get('stores/all', [StoreController::class, 'getAllStores']);
     });
-});
 
-Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('stores')->group(function () {
         Route::get('', [StoreController::class, 'getOwnStore']);
         Route::post('create', [StoreController::class, 'createStore']);
         Route::put('{storeId}', [StoreController::class, 'updateOwnStore']);
         Route::delete('', [StoreController::class, 'deleteOwnStore']);
     });
-});
 
-Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('products')->group(function () {
         Route::get('', [ProductController::class, 'getAllProducts']);
         Route::get('{productId}', [ProductController::class, 'getProduct']);
         Route::post('create', [ProductController::class, 'createProduct']);
         Route::put('{productId}', [ProductController::class, 'updateProduct']);
+        Route::delete('{productId}', [ProductController::class, 'deleteProduct']);
+    });
+
+    Route::prefix('subscription')->group(function () {
+        Route::post('intent', [PaymentController::class, 'createIntent']);
+        Route::post('attach', [PaymentController::class, 'attachPayment']);
     });
 });
