@@ -18,6 +18,7 @@ class User extends Authenticatable
         'gender',
         'email',
         'password',
+        'subscription',
         'role_id',
         'is_approved',
     ];
@@ -35,6 +36,7 @@ class User extends Authenticatable
         'email' => 'string',
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'subscription' => 'boolean',
         'role_id' => 'integer',
         'is_approved' => 'boolean',
     ];
@@ -57,5 +59,10 @@ class User extends Authenticatable
     public function isUser()
     {
         return $this->role_id === 1;
+    }
+
+    public function isSubscribed()
+    {
+        return $this->subscription === true;
     }
 }

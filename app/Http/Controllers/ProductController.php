@@ -42,7 +42,7 @@ class ProductController extends Controller
 
     public function createProduct(CreateProductRequest $request)
     {
-        $user = Auth::user()->id;
+        $user = Auth::user();
 
         $product = $this->productService->createProduct($request->validated(), $user);
 
@@ -52,32 +52,25 @@ class ProductController extends Controller
 
     }
 
-    public function updateProduct(UpdateProductRequest $request, Product $product)
+    public function updateProduct(UpdateProductRequest $request, $productId)
     {
-        $userId = Auth::user()->id;
+        $user = Auth::user();
 
-        $store = Store::where('user_id', $userId)->first();
-
-        if (!$store) {
-            return response()->json([
-                'message' => 'Your account does not have an associated store.'
-            ], 403);
-        }
-
-        if ($product->store_id !== $store->id) {
-            return response()->json([
-                'message' => 'You are not authorized to update this product.'
-            ], 403);
-        }
-
-        $updatedProduct = $this->productService->updateProduct(
-            $request->validated(),
-            $product->id,
-            $store->id
-        );
+        $updatedProduct = $this->productService->updateProduct($request->validated(),(int) $productId,$user);
 
         return response()->json([
             'product' => $updatedProduct
+        ], 200);
+    }
+
+    public function deleteProduct($productId)
+    {
+        $user = Auth::user();
+
+        $deletedProduct = $this->productService->removeProduct((int) $productId, $user);
+
+        return response()->json([
+            'product' => $deletedProduct
         ], 200);
     }
 

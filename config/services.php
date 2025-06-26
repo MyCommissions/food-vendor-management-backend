@@ -34,5 +34,9 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+    'paymongo' => [
+        'KEY' => ['key' => env('API_KEY')],
+        'URL' => ['payment' => env('PAY_URL')]
+    ]
 
 ];
