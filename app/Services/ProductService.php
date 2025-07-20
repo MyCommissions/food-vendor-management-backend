@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Exceptions\ProductAlreadyExistsException;
+use App\Exceptions\UnauthorizedAccessException;
 use App\Models\Product;
 use App\Models\Store;
 use App\Models\User;
@@ -11,84 +13,42 @@ class ProductService
 {
     public function allProducts(User $user)
     {
-        if (!$user->isVendor()) {
-            throw new HttpClientException(
-                response()->json([
-                    'message' => 'Not Authorized.'
-                ], 403)
-            );
+        if (!$user) {
+            throw new UnauthorizedAccessException();
         }
 
         $storeId = Store::where('user_id', $user->id)
             ->firstOrFail();
 
-        return Product::where('store_id', $storeId)->all();
+        return Product::where('store_id', $storeId)->get();
     }
 
     public function product(int $productId, User $user)
     {
-        if (!$user->isVendor()) {
-            throw new HttpClientException(
-                response()->json([
-                    'message' => 'Not Authorized.'
-                ], 403)
-            );
+        if (!$user) {
+            throw new UnauthorizedAccessException();
         }
 
         $storeId = Store::where('user_id', $user->id)
             ->firstOrFail();
 
-        if (!$storeId) {
-            throw new HttpClientException(
-                response()->json([
-                    'message' => 'Store not found or you are not authorize to access this.'
-                ], 404)
-            );
-        }
-
-        $product = Product::where('id', $productId)
+        return Product::where('id', $productId)
             ->where('store_id', $storeId)
             ->firstOrFail();
-
-        if (!$product) {
-            throw new HttpClientException(
-                response()->json([
-                    'message' => 'Product not found or you are not authorize to access this.'
-                ], 404)
-            );
-        }
-
-        return $product;
     }
 
     public function createProduct(array $data, User $user)
     {
-        if($user->isVendor()) {
-            throw new HttpClientException(
-                response()->json([
-                    'message' => 'Not Authorized.'
-                ], 403)
-            );
+        if(!$user->isAdmin() || !$user->isVendor()) {
+            throw new UnauthorizedAccessException();
         }
 
-        $store = Store::where('user_id', $user->id)->first();
-
-        if (!$store) {
-            throw new HttpClientException(
-                response()->json([
-                    'message' => 'Store not found or you are not authorize to access this.'
-                ], 404)
-            );
-        }
+        $store = Store::where('user_id', $user->id)->firstOrFail();
 
         $product = Product::where('store_id', $store->id)->exists();
 
         if ($product) {
-            throw new HttpClientException(
-                response()->json([
-                    'message' => 'Product already existed on this Store.'
-                ], 403)
-            );
+            throw new ProductAlreadyExistsException();
         }
 
         return Product::create([
@@ -103,32 +63,18 @@ class ProductService
 
     public function updateProduct(array $data, int $productId, User $user)
     {
-        $store = Store::where('user_id', $user->id)->first();
-
-        if (!$store) {
-            throw new HttpClientException(
-                response()->json([
-                    'message' => 'Store not found or you are not authorized to access this.'
-                ], 404)
-            );
+        if (!$user->isAdmin() || !$user->isVendor()) {
+            throw new UnauthorizedAccessException();
         }
+
+        $store = Store::where('user_id', $user->id)->firstOrFail();
 
         $product = Product::where('id',$productId)
             ->where('store_id', $store->id)
             ->firstOrFail();
 
-        if (!$product) {
-            throw new HttpClientException(
-                response()->json([
-                    'message' => 'Product not found or you are not authorize to access this.'
-                ], 404)
-            );
-        }
-
         if ($product->store_id !== $store->id) {
-            return response()->json([
-                'message' => 'You are not authorized to update this product.'
-            ], 404);
+            throw new UnauthorizedAccessException();
         }
 
         $product->update($data);
@@ -138,37 +84,34 @@ class ProductService
 
     public function removeProduct(int $productId, User $user)
     {
-        $store = Store::where('user_id', $user->id)->first();
-
-        if (!$store) {
-            throw new HttpClientException(
-                response()->json([
-                    'message' => 'Store not found or you are not authorized to access this.'
-                ], 404)
-            );
+        if (!$user->isAdmin() || !$user->isVendor()) {
+            throw new UnauthorizedAccessException();
         }
+
+        $store = Store::where('user_id', $user->id)->firstOrFail();
 
         $product = Product::where('id', $productId)
             ->where('store_id', $store->id)
             ->firstOrFail();
 
-        if (!$product) {
-            throw new HttpClientException(
-                response()->json([
-                    'message' => 'Product not found or you are not authorize to access this.'
-                ], 404)
-            );
-        }
-
         if ($product->store_id !== $store->id) {
-            return response()->json([
-                'message' => 'You are not authorized to update this product.'
-            ], 404);
+            throw new UnauthorizedAccessException();
         }
 
         $product->delete();
 
         return $product;
+    }
+
+    public function productsByCategory(string $category, int $storeId, User $user)
+    {
+        if (!$user) {
+            throw new UnauthorizedAccessException();
+        }
+
+        return Product::where('category', $category)
+            ->where('store_id', $storeId)
+            ->get();
     }
 
 }

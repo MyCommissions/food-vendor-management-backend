@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StoreController;
@@ -23,6 +24,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('users/customers', [AdminController::class, 'getAllCustomers']);
         Route::get('users/{id}', [AdminController::class, 'getUser']);
         Route::get('stores/all', [StoreController::class, 'getAllStores']);
+        Route::get('stores/{businessType}', [StoreController::class, 'storesByBusinessType']);
     });
 
     Route::prefix('stores')->group(function () {
@@ -38,10 +40,19 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('create', [ProductController::class, 'createProduct']);
         Route::put('{productId}', [ProductController::class, 'updateProduct']);
         Route::delete('{productId}', [ProductController::class, 'deleteProduct']);
+        Route::get('{category}', [ProductController::class, 'productsByCategory']);
     });
 
     Route::prefix('subscription')->group(function () {
         Route::post('intent', [PaymentController::class, 'createIntent']);
         Route::post('attach', [PaymentController::class, 'attachPayment']);
+    });
+
+    Route::prefix('cart')->group(function () {
+        Route::get('', [CartController::class, 'index']);
+        Route::post('addToCart', [CartController::class, 'add']);
+        Route::put('{productId}', [CartController::class, 'updateQuantity']);
+        Route::delete('{productId}', [CartController::class, 'remove']);
+        Route::post('clear', [CartController::class, 'clear']);
     });
 });

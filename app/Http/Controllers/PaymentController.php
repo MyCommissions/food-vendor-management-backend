@@ -18,25 +18,33 @@ class PaymentController extends Controller
 
     public function createIntent(SubscriptionPaymentRequest $request)
     {
-        $data = $request->validated();
+        try {
+            $data = $request->validated();
 
-        $intent = $this->paymongo->createPaymentIntent($data['amount'], $data['type']);
+            $intent = $this->paymongo->createPaymentIntent($data['amount'], $data['type']);
 
-        return response()->json($intent);
+            return response()->json($intent);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     public function attachPayment(Request $request)
     {
-        $data = $request->validated();
+        try {
+            $data = $request->validated();
 
-        $response = $this->paymongo->attachPaymentMethod($data['intent_id'], $data['method_id']);
+            $response = $this->paymongo->attachPaymentMethod($data['intent_id'], $data['method_id']);
 
-        if (isset($request['data']['attributes']['status']) && $response['data']['attributes']['status'] === 'succeeded') {
-            $user = Auth::user();
-            $user->subscription = true;
-            $user->save();
+            if (isset($request['data']['attributes']['status']) && $response['data']['attributes']['status'] === 'succeeded') {
+                $user = Auth::user();
+                $user->subscription = true;
+                $user->save();
+            }
+
+            return response()->json($response);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
         }
-
-        return response()->json($response);
     }
 }

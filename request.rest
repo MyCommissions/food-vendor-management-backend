@@ -57,42 +57,42 @@ Content-Type: application/json
 GET http://127.0.0.1:8000/api/admin/pending-vendors HTTP/1.1
 Accept: application/json
 Content-Type: application/json
-Authorization: Bearer 4|SjIIXCOZokxelpX0oqhN15cEnDEK8Ws3MIr5RKnff6d9a664
+Authorization: Bearer 1|WUnycjc8zslII3dmpLMLk2P9zItiiz37SuAE9SMK65951d6c
 
 #####
 
 GET http://127.0.0.1:8000/api/admin/users HTTP/1.1
 Accept: application/json
 Content-Type: application/json
-Authorization: Bearer 4|SjIIXCOZokxelpX0oqhN15cEnDEK8Ws3MIr5RKnff6d9a664
+Authorization: Bearer 2|tiA97LokYZ7tOD0c2hpfbiLrnFeYk3Zxz4Q6ID1Fbc62e43d
 
 #####
 
 GET http://127.0.0.1:8000/api/admin/users/customers HTTP/1.1
 Accept: application/json
 Content-Type: application/json
-Authorization: Bearer 4|SjIIXCOZokxelpX0oqhN15cEnDEK8Ws3MIr5RKnff6d9a664
+Authorization: Bearer 2|tiA97LokYZ7tOD0c2hpfbiLrnFeYk3Zxz4Q6ID1Fbc62e43d
 
 #####
 
 GET http://127.0.0.1:8000/api/admin/users/vendors HTTP/1.1
 Accept: application/json
 Content-Type: application/json
-Authorization: Bearer 4|SjIIXCOZokxelpX0oqhN15cEnDEK8Ws3MIr5RKnff6d9a664
+Authorization: Bearer 2|tiA97LokYZ7tOD0c2hpfbiLrnFeYk3Zxz4Q6ID1Fbc62e43d
 
 #####
 
-GET http://127.0.0.1:8000/api/admin/users/2 HTTP/1.1
+GET http://127.0.0.1:8000/api/admin/users/1 HTTP/1.1
 Accept: application/json
 Content-Type: application/json
-Authorization: Bearer 4|SjIIXCOZokxelpX0oqhN15cEnDEK8Ws3MIr5RKnff6d9a664
+Authorization: Bearer 2|tiA97LokYZ7tOD0c2hpfbiLrnFeYk3Zxz4Q6ID1Fbc62e43d
 
 #####
 
-POST http://127.0.0.1:8000/api/admin/vendors/6/approve HTTP/1.1
+POST http://127.0.0.1:8000/api/admin/vendors/1/approve HTTP/1.1
 Accept: application/json
 Content-Type: application/json
-Authorization: Bearer 4|SjIIXCOZokxelpX0oqhN15cEnDEK8Ws3MIr5RKnff6d9a664
+Authorization: Bearer 2|tiA97LokYZ7tOD0c2hpfbiLrnFeYk3Zxz4Q6ID1Fbc62e43d
 
 #####
 
@@ -133,6 +133,18 @@ Authorization: Bearer YOUR_VENDOR_TOKEN_HERE
     "category": "Meals",
     "price": 12.99,
     "image": "@/path/to/your/image.jpg"
+}
+
+#####
+
+POST http://127.0.0.1:8000/api/subscription/intent HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer 4|IMIhdSZY0ngWjhIBe3gDMT3M1oWKbyF7DodBqEig668d8da0
+
+{
+  "amount": 10000,
+  "type": "gcash"
 }
 
 #####

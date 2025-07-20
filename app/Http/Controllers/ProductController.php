@@ -5,9 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Services\ProductService;
-use App\Models\Store;
-use App\Models\Product;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
@@ -20,58 +17,91 @@ class ProductController extends Controller
 
     public function getAllProducts()
     {
-        $user = Auth::user();
+        try {
+            $user = Auth::user();
 
-        $products = $this->productService->allProducts($user);
+            $products = $this->productService->allProducts($user);
 
-        return response()->json([
-            'products' => $products
-        ], 200);
+            return response()->json([
+                'products' => $products
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     public function getProduct($productId)
     {
-        $user = Auth::user();
+        try {
+            $user = Auth::user();
 
-        $product = $this->productService->product((int) $productId, $user);
+            $product = $this->productService->product((int) $productId, $user);
 
-        return response()->json([
-            'product' => $product
-        ], 200);
+            return response()->json([
+                'product' => $product
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     public function createProduct(CreateProductRequest $request)
     {
-        $user = Auth::user();
+        try {
+            $user = Auth::user();
 
-        $product = $this->productService->createProduct($request->validated(), $user);
+            $product = $this->productService->createProduct($request->validated(), $user);
 
-        return response()->json([
-            'product' => $product
-        ], 201);
-
+            return response()->json([
+                'product' => $product
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     public function updateProduct(UpdateProductRequest $request, $productId)
     {
-        $user = Auth::user();
+        try {
+            $user = Auth::user();
 
-        $updatedProduct = $this->productService->updateProduct($request->validated(),(int) $productId,$user);
+            $updatedProduct = $this->productService->updateProduct($request->validated(), (int) $productId, $user);
 
-        return response()->json([
-            'product' => $updatedProduct
-        ], 200);
+            return response()->json([
+                'product' => $updatedProduct
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     public function deleteProduct($productId)
     {
-        $user = Auth::user();
+        try {
+            $user = Auth::user();
 
-        $deletedProduct = $this->productService->removeProduct((int) $productId, $user);
+            $deletedProduct = $this->productService->removeProduct((int) $productId, $user);
 
-        return response()->json([
-            'product' => $deletedProduct
-        ], 200);
+            return response()->json([
+                'product' => $deletedProduct
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
+    public function productsByCategory($productId, $storeId)
+    {
+        try {
+            $user = Auth::user();
+
+            $products = $this->productService->productsByCategory((int) $productId, (int) $storeId, $user);
+
+            return response()->json([
+                'products' => $products
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
 }

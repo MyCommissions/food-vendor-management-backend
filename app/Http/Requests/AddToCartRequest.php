@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SubscriptionPaymentRequest extends FormRequest
+class AddToCartRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -19,12 +19,11 @@ class SubscriptionPaymentRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    
     public function rules(): array
     {
         return [
-            'amount' => 'required|numeric',
-            'type' => 'required|string|in:gcash,card'
+            'product_id' => 'required|exists:products,id',
+            'quantity' => 'nullable|integer|min:1'
         ];
     }
 }

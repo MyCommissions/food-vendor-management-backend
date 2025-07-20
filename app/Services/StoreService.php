@@ -2,9 +2,12 @@
 
 namespace App\Services;
 
+use App\Exceptions\StoreNotFoundException;
+use App\Exceptions\VendorOnlyAccessException;
 use App\Http\Requests;
 use App\Models\Store;
 use App\Models\User;
+use App\Exceptions\UnauthorizedAccessException;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
@@ -14,12 +17,8 @@ class StoreService
 
     public function allStores(User $user)
     {
-        if (!$user->isAdmin()) {
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Unauthorized Access to this route.'
-                ], 403)
-            );
+        if (!$user) {
+            throw new UnauthorizedAccessException();
         }
 
         return Store::all();
@@ -27,45 +26,23 @@ class StoreService
 
     public function store(User $user)
     {
-        if (!$user->isVendor()) {
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Unauthorized Access to this route.'
-                ], 403)
-            );
+        if (!$user) {
+            throw new UnauthorizedAccessException();
         }
         
-        $store = Store::where('user_id', $user->id)->first();
-
-        if (!$store) {
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Store not found.'
-                ], 404)
-            );
-        }
-
-        return $store;
+        return Store::where('user_id', $user->id)->firstOrFail();
     }
 
     public function createStore(array $data, User $user)
     {
-        if ($user->isUser()) {
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Only Vendors can create a store.'
-                ], 403)
-            );
+        if (!$user->isAdmin() || !$user->isVendor()) {
+            throw new UnauthorizedAccessException();
         }
 
         $store = Store::where("user_id", $user->id)->exists();
 
         if ($store) {
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Vendor already have a store registered on the system.'
-                ], 403)
-            );
+            throw new VendorOnlyAccessException();
         }
 
         return Store::create([
@@ -77,25 +54,13 @@ class StoreService
 
     public function updateStore(array $data, int $storeId, User $user)
     {
-        if (!$user->isVendor()) {
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Unauthorized Access to this route.'
-                ], 403)
-            );
+        if (!$user->isAdmin() || !$user->isVendor()) {
+            throw new UnauthorizedAccessException();
         }
 
         $store = Store::where('id', $storeId)
             ->where('user_id', $user->id)
             ->firstOrFail();
-
-        if (!$store) {
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Store not found or you are not authorized to update it.'
-                ], 404)
-            );
-        }
 
         $store->update($data);
 
@@ -104,31 +69,36 @@ class StoreService
   
     public function deleteStore(User $user)
     {
+        if (!$user->isAdmin() || !$user->isVendor()) {
+            throw new UnauthorizedAccessException();
+        }
+
         $storeId = Store::where('user_id', $user->id)
             ->firstOrFail();
-
-        if (!$storeId) {
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Store not found.'
-                ], 404)
-            );
-        }
 
         $store = Store::where('store_id', $storeId)
             ->where('user_id', $user->id)
             ->firstOrFail();
 
-        if (!$store) {
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'Store not found or you are not authorized to delete it.'
-                ], 404)
-            );
-        }
-
         $store->delete();
 
         return $store;
+    }
+
+    public function storesByBusinessType(string $businessType, User $user)
+    {
+        if (!$user->isAdmin()) {
+            throw new UnauthorizedAccessException();
+        }
+
+        $stores = Store::where('business_type', $businessType)
+            ->where('user_id', $user->id)
+            ->get();
+
+        if (!$stores) {
+            throw new StoreNotFoundException();
+        }
+
+        return $stores;
     }
 }
